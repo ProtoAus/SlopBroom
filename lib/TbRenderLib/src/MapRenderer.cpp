@@ -162,11 +162,14 @@ public:
 
 std::unique_ptr<ObjectRenderer> createDefaultRenderer(mdl::Map& map)
 {
-  return std::make_unique<ObjectRenderer>(
+  auto renderer = std::make_unique<ObjectRenderer>(
     map.logger(),
     map.entityModelManager(),
     map.editorContext(),
     UnselectedBrushRendererFilter{map.editorContext()});
+  // Only the default renderer tints by visgroup color; selection/locked keep their own.
+  renderer->setVisGroupManager(&map.visGroupManager());
+  return renderer;
 }
 
 std::unique_ptr<ObjectRenderer> createSelectionRenderer(mdl::Map& map)
@@ -788,11 +791,19 @@ void MapRenderer::resourcesWereProcessed(const std::vector<gl::ResourceId>& reso
   m_defaultRenderer->invalidateEntityModels(entityModels);
   m_selectionRenderer->invalidateEntityModels(entityModels);
   m_lockedRenderer->invalidateEntityModels(entityModels);
+
+  // A decal looks up its material by name during validation; if that material had not
+  // finished loading yet at first validation, the entity was marked validated with NO
+  // geometry (EntityDecalRenderer validateDecalData). Now that async texture resources
+  // have arrived, re-validate so the decal appears on map LOAD instead of only after the
+  // user selects the infodecal and forces a re-validation.
+  invalidateEntityDecalRenderer();
 }
 
 void MapRenderer::materialCollectionsWillChange()
 {
   invalidateRenderers(Renderer::All);
+  invalidateEntityDecalRenderer();
 }
 
 void MapRenderer::entityDefinitionsDidChange()
@@ -800,6 +811,7 @@ void MapRenderer::entityDefinitionsDidChange()
   reloadEntityModels();
   invalidateRenderers(Renderer::All);
   invalidateEntityLinkRenderer();
+  invalidateEntityDecalRenderer();
 }
 
 void MapRenderer::modsDidChange()
@@ -807,6 +819,7 @@ void MapRenderer::modsDidChange()
   reloadEntityModels();
   invalidateRenderers(Renderer::All);
   invalidateEntityLinkRenderer();
+  invalidateEntityDecalRenderer();
 }
 
 void MapRenderer::editorContextDidChange()
@@ -814,6 +827,7 @@ void MapRenderer::editorContextDidChange()
   invalidateRenderers(Renderer::All);
   invalidateEntityLinkRenderer();
   invalidateGroupLinkRenderer();
+  invalidateEntityDecalRenderer();
 }
 
 void MapRenderer::preferenceDidChange(const std::filesystem::path& path)

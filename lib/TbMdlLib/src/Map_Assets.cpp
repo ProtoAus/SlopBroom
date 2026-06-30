@@ -21,6 +21,7 @@
 
 #include "Logger.h"
 #include "gl/MaterialManager.h"
+#include "mdl/DecalCollection.h"
 #include "mdl/EntityModelManager.h"
 #include "mdl/GameConfig.h"
 #include "mdl/GameInfo.h"
@@ -90,22 +91,32 @@ void setEntityDefinitionFile(Map& map, const EntityDefinitionFileSpec& spec)
 
 std::vector<std::filesystem::path> enabledMaterialCollections(const Map& map)
 {
+  auto result = std::vector<std::filesystem::path>{};
   if (
     const auto* materialCollectionStr =
       map.worldNode().entity().property(EntityPropertyKeys::TbEnabledMaterialCollections))
   {
     const auto strs = kdl::str_split(*materialCollectionStr, ";");
-    return kdl::vec_sort_and_remove_duplicates(
+    result = kdl::vec_sort_and_remove_duplicates(
       strs
       | std::views::transform([](const auto& str) { return std::filesystem::path{str}; })
       | kdl::ranges::to<std::vector>());
   }
+  else
+  {
+    // Otherwise, enable all material collections
+    result = kdl::vec_sort_and_remove_duplicates(
+      map.materialManager().collections()
+      | std::views::transform([](const auto& collection) { return collection.path(); })
+      | kdl::ranges::to<std::vector>());
+  }
 
-  // Otherwise, enable all material collections
-  return kdl::vec_sort_and_remove_duplicates(
-    map.materialManager().collections()
-    | std::views::transform([](const auto& collection) { return collection.path(); })
-    | kdl::ranges::to<std::vector>());
+  // The synthetic decal collection (gfx/decals) is loaded internally and surfaced only in
+  // the infodecal picker (scoped, enable-state-independent). It is never part of the
+  // user-managed wad set, so keep it out of the enable/disable editor, the _tb_textures
+  // worldspawn list, and every non-scoped material browser.
+  std::erase(result, DecalMaterialCollectionPath);
+  return result;
 }
 
 std::vector<std::filesystem::path> disabledMaterialCollections(const Map& map)
@@ -114,6 +125,7 @@ std::vector<std::filesystem::path> disabledMaterialCollections(const Map& map)
     map.materialManager().collections()
     | std::views::transform([](const auto& collection) { return collection.path(); })
     | kdl::ranges::to<std::vector>());
+  std::erase(materialCollections, DecalMaterialCollectionPath);
 
   return kdl::set_difference(materialCollections, enabledMaterialCollections(map));
 }

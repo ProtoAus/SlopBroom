@@ -40,6 +40,7 @@
 #include "vm/intersection.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 #include <ranges>
 
@@ -79,6 +80,20 @@ std::vector<Vertex> createDecalBrushFace(
   auto attrs = mdl::BrushFaceAttributes{materialName, face.attributes()};
   auto uvCoordSystem = face.uvCoordSystem().clone();
 
+  // Per-entity size multiplier from the `scale` key (e.g. infodecal's "1.0"/"0.5"), so the
+  // editor preview matches the in-game decal size. Default 1.0 when absent/unparseable.
+  auto decalScale = 1.0;
+  if (const auto* scaleStr = entityNode.entity().property("scale");
+      scaleStr != nullptr && !scaleStr->empty())
+  {
+    char* end = nullptr;
+    if (const auto v = std::strtod(scaleStr->c_str(), &end);
+        end != scaleStr->c_str() && v > 0.0)
+    {
+      decalScale = v;
+    }
+  }
+
   // create the geometry for the decal
   const auto plane = face.boundary();
   const auto origin = entityNode.physicalBounds().center();
@@ -86,9 +101,9 @@ std::vector<Vertex> createDecalBrushFace(
 
   // re-project the vertices in case the UV axes are not on the face plane
   const auto xShift =
-    uvCoordSystem->uAxis() * double(attrs.xScale() * textureSize.x() / 2.0f);
+    uvCoordSystem->uAxis() * double(attrs.xScale() * textureSize.x() / 2.0f) * decalScale;
   const auto yShift =
-    uvCoordSystem->vAxis() * double(attrs.yScale() * textureSize.y() / 2.0f);
+    uvCoordSystem->vAxis() * double(attrs.yScale() * textureSize.y() / 2.0f) * decalScale;
 
   // we want to shift every vertex by just a little bit to avoid z-fighting
   const auto offset = plane.normal * 0.1;

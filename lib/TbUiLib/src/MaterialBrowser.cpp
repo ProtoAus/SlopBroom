@@ -103,6 +103,12 @@ void MaterialBrowser::setFilterText(const std::string& filterText)
   m_filterBox->setText(QString::fromStdString(filterText));
 }
 
+void MaterialBrowser::setScopeCollection(
+  std::optional<std::filesystem::path> scopeCollection)
+{
+  m_view->setScopeCollection(std::move(scopeCollection));
+}
+
 /**
  * See EntityBrowser::createGui
  */

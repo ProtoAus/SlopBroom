@@ -23,6 +23,8 @@
 #include "gl/FontDescriptor.h"
 #include "ui/CellView.h"
 
+#include <filesystem>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -59,6 +61,9 @@ private:
   bool m_hideUnused = false;
   MaterialSortOrder m_sortOrder = MaterialSortOrder::Name;
   std::string m_filterText;
+  // When set, show ONLY this collection (ignoring enabled-state) — used by the decal
+  // picker. Keyed on gl::MaterialCollection::path().
+  std::optional<std::filesystem::path> m_scopeCollection;
 
   const gl::Material* m_selectedMaterial = nullptr;
 
@@ -73,6 +78,7 @@ public:
   void setGroup(bool group);
   void setHideUnused(bool hideUnused);
   void setFilterText(const std::string& filterText);
+  void setScopeCollection(std::optional<std::filesystem::path> scopeCollection);
 
   const gl::Material* selectedMaterial() const;
   void setSelectedMaterial(const gl::Material* selectedMaterial);

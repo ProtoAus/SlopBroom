@@ -113,6 +113,16 @@ void MaterialBrowserView::setFilterText(const std::string& filterText)
   }
 }
 
+void MaterialBrowserView::setScopeCollection(
+  std::optional<std::filesystem::path> scopeCollection)
+{
+  if (scopeCollection != m_scopeCollection)
+  {
+    m_scopeCollection = std::move(scopeCollection);
+    reloadMaterials();
+  }
+}
+
 const gl::Material* MaterialBrowserView::selectedMaterial() const
 {
   return m_selectedMaterial;
@@ -217,9 +227,24 @@ void MaterialBrowserView::addMaterialToLayout(
 std::vector<const gl::MaterialCollection*> MaterialBrowserView::getCollections() const
 {
   const auto& map = m_document.map();
-  const auto enabledMaterialCollections = mdl::enabledMaterialCollections(map);
-
   auto result = std::vector<const gl::MaterialCollection*>{};
+
+  if (m_scopeCollection)
+  {
+    // Scoped browser (decal picker): show ONLY this collection, ignoring enabled-state.
+    for (const auto& collection : map.materialManager().collections())
+    {
+      if (collection.path() == *m_scopeCollection)
+      {
+        result.push_back(&collection);
+      }
+    }
+    return result;
+  }
+
+  // Non-scoped browsers (face/wall, replace-material, ...) show the enabled collections.
+  // The synthetic decal collection is excluded centrally by enabledMaterialCollections.
+  const auto enabledMaterialCollections = mdl::enabledMaterialCollections(map);
   for (const auto& collection : map.materialManager().collections())
   {
     if (kdl::vec_contains(enabledMaterialCollections, collection.path()))
