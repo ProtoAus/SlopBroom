@@ -130,6 +130,8 @@ public:
   bool newDocument();
   void openDocument();
   bool openDocument(const std::filesystem::path& path);
+  void importHammerMap();
+  void importHammerJmf();
 
   void showWelcomeWindow();
 

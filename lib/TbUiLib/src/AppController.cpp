@@ -20,7 +20,10 @@
 #include "ui/AppController.h"
 
 #include <QDesktopServices>
+#include <QDir>
+#include <QFile>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QOffscreenSurface>
@@ -40,7 +43,9 @@
 #include "gl/VboManager.h"
 #include "mdl/EnvironmentConfig.h"
 #include "mdl/GameManager.h"
+#include "mdl/JmfImport.h"
 #include "mdl/MapHeader.h"
+#include "mdl/VmfImport.h"
 #include "ui/AboutDialog.h"
 #include "ui/ActionManager.h"
 #include "ui/CrashDialog.h"
@@ -363,6 +368,112 @@ bool AppController::openDocument(const std::filesystem::path& path)
              return false;
            })
          | kdl::value();
+}
+
+void AppController::importHammerMap()
+{
+  const auto pathStr = QFileDialog::getOpenFileName(
+    nullptr,
+    tr("Import Hammer Map"),
+    fileDialogDefaultDirectory(FileDialogDir::Map),
+    "Hammer VMF (*.vmf);;Any files (*.*)");
+
+  const auto path = pathFromQString(pathStr);
+  if (path.empty())
+  {
+    return;
+  }
+  updateFileDialogDefaultDirectoryWithFilename(FileDialogDir::Map, pathStr);
+
+  auto vmfFile = QFile{pathStr};
+  if (!vmfFile.open(QIODevice::ReadOnly | QIODevice::Text))
+  {
+    QMessageBox::critical(
+      nullptr, "TrenchBroom", tr("Could not read %1").arg(pathStr), QMessageBox::Ok);
+    return;
+  }
+  const auto vmfText = vmfFile.readAll().toStdString();
+  vmfFile.close();
+
+  // Transcode VMF -> Valve .map text, drop it in a temp file, and open it through the
+  // normal load pipeline (which prompts for the game and builds the geometry for us).
+  mdl::convertVmfToMapText(vmfText)
+    | kdl::and_then([&](const std::string& mapText) -> Result<bool> {
+        const auto tempPath = QDir{QDir::tempPath()}.filePath(
+          QFileInfo{pathStr}.completeBaseName() + "_imported.map");
+
+        auto outFile = QFile{tempPath};
+        if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+          return Error{"could not write the temporary .map file"};
+        }
+        outFile.write(QByteArray::fromStdString(mapText));
+        outFile.close();
+
+        openDocument(pathFromQString(tempPath));
+        return true;
+      })
+    | kdl::transform_error([&](const auto& e) {
+        QMessageBox::critical(
+          nullptr,
+          "TrenchBroom",
+          QString::fromStdString("Could not import VMF: " + e.msg),
+          QMessageBox::Ok);
+        return false;
+      })
+    | kdl::value();
+}
+
+void AppController::importHammerJmf()
+{
+  const auto pathStr = QFileDialog::getOpenFileName(
+    nullptr,
+    tr("Import Hammer Map"),
+    fileDialogDefaultDirectory(FileDialogDir::Map),
+    "Jackhammer JMF (*.jmf);;Any files (*.*)");
+
+  const auto path = pathFromQString(pathStr);
+  if (path.empty())
+  {
+    return;
+  }
+  updateFileDialogDefaultDirectoryWithFilename(FileDialogDir::Map, pathStr);
+
+  auto jmfFile = QFile{pathStr};
+  if (!jmfFile.open(QIODevice::ReadOnly)) // binary, no Text flag
+  {
+    QMessageBox::critical(
+      nullptr, "TrenchBroom", tr("Could not read %1").arg(pathStr), QMessageBox::Ok);
+    return;
+  }
+  const auto jmfBytes = jmfFile.readAll().toStdString();
+  jmfFile.close();
+
+  mdl::convertJmfToMapText(jmfBytes)
+    | kdl::and_then([&](const std::string& mapText) -> Result<bool> {
+        const auto tempPath = QDir{QDir::tempPath()}.filePath(
+          QFileInfo{pathStr}.completeBaseName() + "_imported.map");
+
+        auto outFile = QFile{tempPath};
+        if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+          return Error{"could not write the temporary .map file"};
+        }
+        outFile.write(QByteArray::fromStdString(mapText));
+        outFile.close();
+
+        openDocument(pathFromQString(tempPath));
+        return true;
+      })
+    | kdl::transform_error([&](const auto& e) {
+        QMessageBox::critical(
+          nullptr,
+          "TrenchBroom",
+          QString::fromStdString("Could not import JMF: " + e.msg),
+          QMessageBox::Ok);
+        return false;
+      })
+    | kdl::value();
 }
 
 void AppController::showWelcomeWindow()

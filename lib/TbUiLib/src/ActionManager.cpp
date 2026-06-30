@@ -815,6 +815,30 @@ void ActionManager::createFileMenu()
     [](const auto& context) { return context.hasDocument(); },
   }));
 
+  auto& importMenu = fileMenu.addMenu("Import");
+  importMenu.addItem(addAction(Action{
+    "Menu/File/Import/Hammer VMF...",
+    QObject::tr("Hammer VMF..."),
+    ActionContext::Any,
+    QKeySequence{},
+    [](auto& context) { context.appController().importHammerMap(); },
+    [](const auto&) { return true; },
+    std::nullopt,
+    QObject::tr("Imports a Valve Map Format (.vmf) Hammer map: world brushes, entities and "
+                "VisGroups. Source materials may not resolve (retexture in TrenchBroom)."),
+  }));
+  importMenu.addItem(addAction(Action{
+    "Menu/File/Import/Hammer JMF...",
+    QObject::tr("Hammer JMF (J.A.C.K.)..."),
+    ActionContext::Any,
+    QKeySequence{},
+    [](auto& context) { context.appController().importHammerJmf(); },
+    [](const auto&) { return true; },
+    std::nullopt,
+    QObject::tr("Imports a J.A.C.K. / Jackhammer (.jmf) GoldSrc map: world brushes, entities "
+                "and VisGroups (with their colors). Textures need the map's WADs configured."),
+  }));
+
   auto& exportMenu = fileMenu.addMenu("Export");
   exportMenu.addItem(addAction(Action{
     "Menu/File/Export/Wavefront OBJ...",
@@ -1828,6 +1852,14 @@ void ActionManager::createViewMenu()
     [](const auto& context) {
       return context.hasDocument() && context.mapWindow().currentViewMaximized();
     },
+  }));
+  viewMenu.addItem(addAction(Action{
+    "Menu/View/Entity Report...",
+    QObject::tr("Entity Report..."),
+    ActionContext::Any,
+    QKeySequence{},
+    [](auto& context) { context.mapWindow().showEntityReportDialog(); },
+    [](const auto& context) { return context.hasDocument(); },
   }));
   viewMenu.addSeparator();
   viewMenu.addItem(addAction(Action{
