@@ -18,6 +18,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/BitmapButton.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/BorderLine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/BorderPanel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/BrushBuilderUtils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CameraAnimation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CameraLinkHelper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CameraTool2D.cpp
@@ -54,6 +55,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CreateEntityToolController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CurrentGameIndicator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CyclingMapView.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DefaultTextureScaleComboBox.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DialogButtonLayout.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DialogHeader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/DrawShapeTool.cpp
@@ -77,6 +79,8 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/EntityPropertyItemDelegate.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/EntityPropertyModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/EntityPropertyTable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/EntityReportDialog.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/EntityReportModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ExtrudeTool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ExtrudeToolController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/FaceAttribsEditor.cpp
@@ -140,6 +144,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MaterialCollectionEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MiniToolBarLayout.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ModEditor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelPickerView.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MousePreferencePane.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MoveHandleDragTracker.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MoveObjectsTool.cpp
@@ -181,9 +186,11 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SignalDelayer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SliderWithLabel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartChoiceEditor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartDecalEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartColorEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartDefaultPropertyEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartFlagsEditor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartModelEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartPropertyEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartPropertyEditorManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SmartWadEditor.cpp
@@ -221,8 +228,10 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VertexTool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VertexToolController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewEditor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewFilterPanel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewPreferencePane.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ViewUtils.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/VisGroupEditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WadUtils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WelcomeWindow.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WidgetState.cpp
@@ -247,6 +256,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/BitmapButton.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/BorderLine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/BorderPanel.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/BrushBuilderUtils.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CameraAnimation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CameraLinkHelper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CameraTool2D.h
@@ -283,6 +293,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CreateEntityToolController.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CurrentGameIndicator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/CyclingMapView.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/DefaultTextureScaleComboBox.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/DialogButtonLayout.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/DialogHeader.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/DrawShapeTool.h
@@ -306,6 +317,8 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/EntityPropertyItemDelegate.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/EntityPropertyModel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/EntityPropertyTable.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/EntityReportDialog.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/EntityReportModel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ExtrudeTool.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ExtrudeToolController.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/FaceAttribsEditor.h
@@ -370,6 +383,7 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/MaterialCollectionEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/MiniToolBarLayout.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ModEditor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ModelPickerView.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/MousePreferencePane.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/MoveHandleDragTracker.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/MoveObjectsTool.h
@@ -412,9 +426,11 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SignalDelayer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SliderWithLabel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartChoiceEditor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartDecalEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartColorEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartDefaultPropertyEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartFlagsEditor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartModelEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartPropertyEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartPropertyEditorManager.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/SmartWadEditor.h
@@ -455,8 +471,10 @@ target_sources(TbUiLib
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/VertexToolControllerBase.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ViewConstants.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ViewEditor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ViewFilterPanel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ViewPreferencePane.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/ViewUtils.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/VisGroupEditor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/WadUtils.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/WelcomeWindow.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/WidgetState.h

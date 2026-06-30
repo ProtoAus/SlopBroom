@@ -84,6 +84,7 @@ target_sources(TbMdlLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadAssimpModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadBspModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadDdsTexture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadDecalMaterials.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadDkmModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadEntityDefinitions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/LoadEntityModel.cpp
@@ -118,6 +119,7 @@ target_sources(TbMdlLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Map_NodeVisibility.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Map_Picking.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Map_Selection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Map_VisGroups.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Map_World.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Map.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MapFileSerializer.cpp
@@ -171,6 +173,7 @@ target_sources(TbMdlLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SetCurrentLayerCommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SetLinkIdsCommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SetLockStateCommand.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SetVisGroupMembershipCommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SetVisibilityCommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SoftMapBounds.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SoftMapBoundsValidator.cpp
@@ -192,8 +195,13 @@ target_sources(TbMdlLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Validator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ValidatorRegistry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VertexHandleManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/VisGroup.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/VisGroupCommand.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/VisGroupManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VisualEffect.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/VisibilityState.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/VmfImport.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/JmfImport.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WadPropertyUtils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WorldBoundsValidator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/WorldNodePathSeparatorValidator.cpp
