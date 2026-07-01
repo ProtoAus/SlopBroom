@@ -25,6 +25,7 @@
 #include "mdl/EditorContext.h"
 #include "mdl/DecalDefinition.h"
 #include "mdl/Entity.h"
+#include "mdl/EntityColorPropertyValue.h"
 #include "mdl/EntityDefinition.h"
 #include "mdl/EntityModelManager.h"
 #include "mdl/EntityNode.h"
@@ -574,6 +575,29 @@ const Color& EntityRenderer::boundsColor(const mdl::EntityNode& entityNode) cons
       return m_visGroupBoundsColor;
     }
   }
+
+  // A `light` entity draws its box in its own light colour (`color`), so the colour reads at a
+  // glance in the editor. Falls through to the FGD class colour when `color` is absent.
+  if (entityNode.entity().classname() == "light")
+  {
+    if (const auto* colorStr = entityNode.entity().property("color");
+        colorStr != nullptr && !colorStr->empty())
+    {
+      auto resolved = false;
+      mdl::parseEntityColorPropertyValue(
+        entityNode.entity().definition(), "color", *colorStr)
+        | kdl::transform([&](const mdl::EntityColorPropertyValue& parsed) {
+            m_lightBoundsColor = Color{parsed.color.to<RgbaF>()};
+            resolved = true;
+          })
+        | kdl::ignore();
+      if (resolved)
+      {
+        return m_lightBoundsColor;
+      }
+    }
+  }
+
   if (const auto* definition = entityNode.entity().definition())
   {
     return definition->color;

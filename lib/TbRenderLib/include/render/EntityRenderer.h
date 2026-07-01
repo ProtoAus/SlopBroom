@@ -79,6 +79,9 @@ private:
   // can return a const reference.
   const mdl::VisGroupManager* m_visGroupManager = nullptr;
   mutable Color m_visGroupBoundsColor;
+  // Per-call cache for a `light` entity's box colour (its `_color`), so boundsColor() can
+  // return a const reference.
+  mutable Color m_lightBoundsColor;
 
 public:
   EntityRenderer(
