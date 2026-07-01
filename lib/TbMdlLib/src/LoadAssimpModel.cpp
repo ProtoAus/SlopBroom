@@ -273,22 +273,32 @@ std::optional<std::filesystem::path> resolveAssimpTexturePath(
   const std::filesystem::path& modelPath,
   const fs::FileSystem& fs)
 {
-  const auto modelRelative = modelPath.parent_path() / texturePath;
-  // A multi-component reference (e.g. "textures/nature/fern_1") is a game-root material
-  // name (FTE/IQM shader convention) -> resolve from the game root first. A bare filename
-  // (e.g. "skin.png") is most likely shipped next to the mesh -> prefer model-relative so
-  // a coincidental same-stem image at the game root can't shadow it.
-  const auto bases = texturePath.has_parent_path()
-                       ? std::vector<std::filesystem::path>{texturePath, modelRelative}
-                       : std::vector<std::filesystem::path>{modelRelative, texturePath};
-  for (const auto& base : bases)
+  // findMaterialFile's extension glob narrows the filename via path::string(), which throws on
+  // Windows for a non-ASCII name ("No mapping for the Unicode character ... in the target
+  // multi-byte code page"). Guard the whole resolution so such a path can't abort the model
+  // load -- an unresolved texture just makes the caller fall back to the default texture.
+  try
   {
-    const auto resolved =
-      findMaterialFile(fs, base, ModelTextureExtensions) | kdl::value_or(base);
-    if (fs.pathInfo(resolved) == fs::PathInfo::File)
+    const auto modelRelative = modelPath.parent_path() / texturePath;
+    // A multi-component reference (e.g. "textures/nature/fern_1") is a game-root material
+    // name (FTE/IQM shader convention) -> resolve from the game root first. A bare filename
+    // (e.g. "skin.png") is most likely shipped next to the mesh -> prefer model-relative so
+    // a coincidental same-stem image at the game root can't shadow it.
+    const auto bases = texturePath.has_parent_path()
+                         ? std::vector<std::filesystem::path>{texturePath, modelRelative}
+                         : std::vector<std::filesystem::path>{modelRelative, texturePath};
+    for (const auto& base : bases)
     {
-      return resolved;
+      const auto resolved =
+        findMaterialFile(fs, base, ModelTextureExtensions) | kdl::value_or(base);
+      if (fs.pathInfo(resolved) == fs::PathInfo::File)
+      {
+        return resolved;
+      }
     }
+  }
+  catch (...)
+  {
   }
   return std::nullopt;
 }
