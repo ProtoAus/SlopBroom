@@ -42,6 +42,11 @@ features for an FTEQW-based CS/CoD-style mod.
 
 ![Hammer-style VisGroups](screenshots/visgroups.gif)
 
+**Paste Special** (`Ctrl+Shift+V`) — N copies with an accumulative offset & rotation, optional
+grouping, and automatic unique entity names:
+
+![Paste Special dialog](screenshots/pastespecial.png)
+
 ## Building & license
 
 Built with the same toolchain as upstream (CMake + Ninja + Qt 6); see the
