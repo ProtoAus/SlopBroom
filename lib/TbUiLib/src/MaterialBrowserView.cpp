@@ -123,6 +123,15 @@ void MaterialBrowserView::setScopeCollection(
   }
 }
 
+void MaterialBrowserView::setFolderFilter(std::optional<std::string> folderFilter)
+{
+  if (folderFilter != m_folderFilter)
+  {
+    m_folderFilter = std::move(folderFilter);
+    reloadMaterials();
+  }
+}
+
 const gl::Material* MaterialBrowserView::selectedMaterial() const
 {
   return m_selectedMaterial;
@@ -291,6 +300,16 @@ std::vector<const gl::Material*> MaterialBrowserView::filterMaterials(
         kdl::str_split(m_filterText, " "), [&](const auto& pattern) {
           return kdl::ci::str_contains(material->name(), pattern);
         });
+    });
+  }
+  if (m_folderFilter)
+  {
+    // Keep only materials in the selected folder (the decal picker's folder dropdown).
+    // The folder key is the material name's parent path, e.g. "{PizzaDoggy" for
+    // "{PizzaDoggy/foo", or "" for a top-level "{foo".
+    std::erase_if(materials, [&](const auto* material) {
+      return std::filesystem::path{material->name()}.parent_path().generic_string()
+             != *m_folderFilter;
     });
   }
   return materials;
@@ -488,6 +507,12 @@ QString MaterialBrowserView::tooltip(const Cell& cell)
   else
   {
     ss << "Loading...";
+  }
+  // Show which file backs this material (e.g. textures/foo.dds vs textures/foo.png), so it
+  // is clear whether the mipped DDS or a loose PNG loaded for a given stem.
+  if (const auto& path = material.relativePath(); !path.empty())
+  {
+    ss << "\n" << QString::fromStdString(path.generic_string());
   }
   return tooltip;
 }

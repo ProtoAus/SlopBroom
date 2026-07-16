@@ -109,6 +109,11 @@ void MaterialBrowser::setScopeCollection(
   m_view->setScopeCollection(std::move(scopeCollection));
 }
 
+void MaterialBrowser::setFolderFilter(std::optional<std::string> folderFilter)
+{
+  m_view->setFolderFilter(std::move(folderFilter));
+}
+
 /**
  * See EntityBrowser::createGui
  */

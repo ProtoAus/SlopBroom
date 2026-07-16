@@ -64,6 +64,10 @@ private:
   // When set, show ONLY this collection (ignoring enabled-state) — used by the decal
   // picker. Keyed on gl::MaterialCollection::path().
   std::optional<std::filesystem::path> m_scopeCollection;
+  // When set, show ONLY materials whose name's parent path equals this key — used by the
+  // decal picker's folder dropdown (e.g. "{PizzaDoggy" for gfx/decals/PizzaDoggy/*, or ""
+  // for top-level decals). Empty optional = no folder filtering (default).
+  std::optional<std::string> m_folderFilter;
 
   const gl::Material* m_selectedMaterial = nullptr;
 
@@ -79,6 +83,7 @@ public:
   void setHideUnused(bool hideUnused);
   void setFilterText(const std::string& filterText);
   void setScopeCollection(std::optional<std::filesystem::path> scopeCollection);
+  void setFolderFilter(std::optional<std::string> folderFilter);
 
   const gl::Material* selectedMaterial() const;
   void setSelectedMaterial(const gl::Material* selectedMaterial);

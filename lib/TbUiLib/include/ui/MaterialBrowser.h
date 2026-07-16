@@ -73,6 +73,7 @@ public:
   void setHideUnused(bool hideUnused);
   void setFilterText(const std::string& filterText);
   void setScopeCollection(std::optional<std::filesystem::path> scopeCollection);
+  void setFolderFilter(std::optional<std::string> folderFilter);
 signals:
   void materialSelected(const gl::Material* material);
 

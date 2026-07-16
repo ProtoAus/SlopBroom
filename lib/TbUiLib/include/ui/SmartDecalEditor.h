@@ -19,9 +19,12 @@
 
 #pragma once
 
+#include "NotifierConnection.h"
 #include "ui/SmartPropertyEditor.h"
 
 #include <vector>
+
+class QComboBox;
 
 namespace tb
 {
@@ -44,13 +47,18 @@ class MaterialBrowser;
 // Decal-texture picker for the `texture` key of an infodecal entity. Embeds the real
 // MaterialBrowser (thumbnails + sort), scoped to the loose decal PNGs loaded from
 // gfx/decals (the dedicated DecalMaterialCollectionPath collection, materials named
-// `{<stem>`); clicking a thumbnail sets the key. Companion to the FGD `decal()`
-// directive (EntityDecalRenderer then projects it on the surface).
+// `{<stem>`); clicking a thumbnail sets the key. A folder dropdown filters the grid to a
+// subfolder of gfx/decals (e.g. PizzaDoggy/), mirroring the model browser's folder
+// navigation. Companion to the FGD `decal()` directive (EntityDecalRenderer then projects
+// it on the surface).
 class SmartDecalEditor : public SmartPropertyEditor
 {
   Q_OBJECT
 private:
   MaterialBrowser* m_browser = nullptr;
+  QComboBox* m_folderChoice = nullptr;
+
+  NotifierConnection m_notifierConnection;
 
 public:
   explicit SmartDecalEditor(
@@ -58,6 +66,8 @@ public:
 
 private:
   void createGui(AppController& appController);
+  void reloadFolders();
+  void applyFolderFilter();
   void onMaterialSelected(const gl::Material* material);
   void doUpdateVisual(const std::vector<mdl::EntityNodeBase*>& nodes) override;
 };
