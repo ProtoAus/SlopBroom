@@ -15,7 +15,15 @@ features for an FTEQW-based CS/CoD-style mod.
 - **Visual model / sprite picker** — browse `models/` and `sprites/` as a thumbnail grid for any
   `prop_*` or `env_sprite`, with a folder dropdown and file-type filter.
 - **Material-decal picker** — browse loose `gfx/decals` PNGs and place infodecals, rendered in the
-  viewport at their true in-engine size.
+  viewport at their true in-engine size, with a folder dropdown.
+- **Lightmap tooling** — overlay each face's **luxel grid** to see the lightmap resolution you're
+  actually compiling (including per-`func_group` `_world_units_per_luxel` overrides), and preview the
+  compiled `.bsp`'s **baked lighting** in the editor, with a lightmap-only mode.
+- **Modern textures** — mounts every configured package format (`.pak` *and* `.pk3`), loads BC7
+  `.dds` (CPU-decoded, since GL 2.1 has no BPTC) plus loose PNG/TGA, prefers a loose true-colour
+  image over a same-named wad lump, and generates mipmaps so distant surfaces stop shimmering.
+- **Texture filter controls** — nearest or bilinear texels, anisotropic filtering, and a mip
+  LOD-bias slider.
 - Hammer-style **VisGroups** — multi-membership visibility groups.
 - Hammer-style **Paste Special** (`Ctrl+Shift+V`) — paste N copies with an accumulative offset &
   rotation, optionally grouped, with pasted entity names made unique (linked `target` / `targetname`
@@ -29,6 +37,11 @@ features for an FTEQW-based CS/CoD-style mod.
   and `light` boxes tinted by their own colour.
 
 ## In action
+
+**Compiled lighting preview** — the same view unlit, then rendering the compiled `.bsp`'s baked
+lightmaps, then lightmap-only:
+
+![Compiled lighting preview](screenshots/lightmap-preview.gif)
 
 **Entity Report** — every entity in the map, sortable and filterable:
 
