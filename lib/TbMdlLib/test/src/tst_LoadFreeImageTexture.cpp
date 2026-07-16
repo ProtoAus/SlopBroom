@@ -68,7 +68,8 @@ void testImageContents(Result<gl::Texture> result, const ColorMatch match)
 
     CHECK(texture.width() == w);
     CHECK(texture.height() == h);
-    CHECK(texture.buffersIfLoaded().size() == 1u);
+    // an opaque image gets a full generated mip chain: 64, 32, 16, 8, 4, 2, 1
+    CHECK(texture.buffersIfLoaded().size() == 7u);
     CHECK((texture.format() == GL_BGRA || texture.format() == GL_RGBA));
     CHECK(texture.mask() == gl::TextureMask::Off);
 
@@ -124,6 +125,7 @@ TEST_CASE("loadFreeImageTexture")
 
     CHECK(texture.width() == w);
     CHECK(texture.height() == h);
+    // masked images stay a single level: mipping an alpha-tested cutout erodes it
     CHECK(texture.buffersIfLoaded().size() == 1u);
     CHECK((texture.format() == GL_BGRA || texture.format() == GL_RGBA));
     CHECK(texture.mask() == gl::TextureMask::On);
