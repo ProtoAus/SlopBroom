@@ -45,6 +45,11 @@ const mdl::Grid& MoveObjectsTool::grid() const
   return m_document.map().grid();
 }
 
+const mdl::Map& MoveObjectsTool::map() const
+{
+  return m_document.map();
+}
+
 bool MoveObjectsTool::startMove(const InputState& inputState)
 {
   auto& map = m_document.map();

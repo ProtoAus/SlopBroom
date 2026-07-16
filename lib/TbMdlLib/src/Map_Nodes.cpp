@@ -30,6 +30,7 @@
 #include "mdl/LayerNode.h"
 #include "mdl/LinkedGroupUtils.h"
 #include "mdl/Map.h"
+#include "mdl/Map_Entities.h"
 #include "mdl/Map_Groups.h"
 #include "mdl/Map_NodeLocking.h"
 #include "mdl/Map_NodeVisibility.h"
@@ -352,6 +353,8 @@ void duplicateSelectedNodes(Map& map)
     }
 
     selectNodes(map, nodesToSelect);
+    // Keep duplicated point entities on the grid (mirrors the paste path).
+    snapSelectedPointEntitiesToGrid(map);
     if (!transaction.commit())
     {
       return;

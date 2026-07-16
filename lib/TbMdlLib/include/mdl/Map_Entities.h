@@ -47,6 +47,10 @@ bool setEntityProperty(
 bool renameEntityProperty(Map& map, const std::string& oldKey, const std::string& newKey);
 bool removeEntityProperty(Map& map, const std::string& key);
 
+// Snaps each selected point entity's origin to the grid. Used after paste/duplicate so a
+// point entity lands on-grid instead of at the sub-grid offset left by bbox snapping.
+bool snapSelectedPointEntitiesToGrid(Map& map);
+
 bool setEntityColorProperty(Map& map, const std::string& key, const Rgb& newColor);
 bool convertEntityColorRange(Map& map, const std::string& key, ColorRange::Type range);
 bool updateEntitySpawnflag(

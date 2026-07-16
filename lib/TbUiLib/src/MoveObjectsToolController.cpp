@@ -19,15 +19,22 @@
 
 #include "ui/MoveObjectsToolController.h"
 
+#include "mdl/Entity.h"
+#include "mdl/EntityNode.h"
+#include "mdl/EntityNodeBase.h"
+#include "mdl/Grid.h"
 #include "mdl/Hit.h"
 #include "mdl/HitFilter.h"
+#include "mdl/Map.h"
 #include "mdl/ModelUtils.h"
+#include "mdl/Selection.h"
 #include "render/RenderContext.h"
 #include "ui/GestureTracker.h"
 #include "ui/MoveHandleDragTracker.h"
 #include "ui/MoveObjectsTool.h"
 
 #include <cassert>
+#include <optional>
 
 namespace tb::ui
 {
@@ -79,7 +86,32 @@ public:
   DragHandleSnapper makeDragHandleSnapper(
     const InputState&, const SnapMode) const override
   {
-    return makeRelativeHandleSnapper(m_tool.grid());
+    const auto& grid = m_tool.grid();
+    const auto& sel = m_tool.map().selection();
+
+    // A lone point entity magnetizes its ORIGIN onto the grid. The drag handle is the picked
+    // hit point (not the origin), so the standard relative snapper would preserve any sub-grid
+    // offset; snap the origin instead. Brush and multi-object moves keep the relative snap.
+    if (
+      sel.entities.size() == 1 && sel.brushes.empty() && sel.patches.empty()
+      && sel.groups.empty() && sel.entities.front()->entity().pointEntity())
+    {
+      const auto* entityNode = sel.entities.front();
+      return [&grid, entityNode](
+               const InputState&,
+               const DragState& s,
+               const vm::vec3d& proposed) -> std::optional<vm::vec3d> {
+        // Recover the drag-start origin from the invariant (origin - handle) so this is robust
+        // to mid-drag modifier re-calls, then snap origin+delta onto the grid.
+        const auto initialOrigin = entityNode->entity().origin()
+                                   - (s.currentHandlePosition - s.initialHandlePosition);
+        const auto snappedOrigin =
+          grid.snap(initialOrigin + (proposed - s.initialHandlePosition));
+        return s.initialHandlePosition + (snappedOrigin - initialOrigin);
+      };
+    }
+
+    return makeRelativeHandleSnapper(grid);
   }
 };
 

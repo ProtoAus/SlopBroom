@@ -25,6 +25,7 @@
 #include "mdl/EntityDefinition.h"
 #include "mdl/EntityNode.h"
 #include "mdl/GameInfo.h"
+#include "mdl/Grid.h"
 #include "mdl/LinkedGroupUtils.h"
 #include "mdl/Map.h"
 #include "mdl/Map_Geometry.h"
@@ -235,6 +236,33 @@ bool removeEntityProperty(Map& map, const std::string& key)
       [](Group&) { return true; },
       [&](Entity& entity) {
         entity.removeProperty(key);
+        return true;
+      },
+      [](Brush&) { return true; },
+      [](BezierPatch&) { return true; }));
+}
+
+bool snapSelectedPointEntitiesToGrid(Map& map)
+{
+  const auto entityNodes = map.selection().allEntities();
+  const auto& grid = map.grid();
+  return applyAndSwap(
+    map,
+    "Snap Entities to Grid",
+    entityNodes,
+    collectContainingGroups(kdl::vec_static_cast<Node*>(entityNodes)),
+    kdl::overload(
+      [](Layer&) { return true; },
+      [](Group&) { return true; },
+      [&](Entity& entity) {
+        if (entity.pointEntity())
+        {
+          const auto snapped = grid.snap(entity.origin());
+          if (snapped != entity.origin())
+          {
+            entity.setOrigin(snapped);
+          }
+        }
         return true;
       },
       [](Brush&) { return true; },

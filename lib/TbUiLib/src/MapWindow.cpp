@@ -1424,6 +1424,9 @@ void MapWindow::pasteAtCursorPosition()
           transaction.cancel();
           break;
         }
+        // Paste snaps the selection bbox to the grid, which leaves point-entity origins at
+        // a sub-grid offset; snap them back onto the grid.
+        mdl::snapSelectedPointEntitiesToGrid(map);
       }
       transaction.commit();
       break;

@@ -28,6 +28,7 @@ namespace tb
 namespace mdl
 {
 class Grid;
+class Map;
 } // namespace mdl
 
 namespace ui
@@ -54,6 +55,7 @@ public:
 
 public:
   const mdl::Grid& grid() const;
+  const mdl::Map& map() const;
 
   bool startMove(const InputState& inputState);
   MoveResult move(const InputState& inputState, const vm::vec3d& delta);
